@@ -78,6 +78,11 @@ public class LoveLayout extends FrameLayout {
         initDrawable(ids);
     }
 
+    public void addInterpolator(Interpolator interpolator) {
+        interpolators.add(interpolator);
+    }
+
+
     public void addDrawables(int[] ids) {
         for (int id : ids) {
             addDrawable(id);
@@ -112,7 +117,7 @@ public class LoveLayout extends FrameLayout {
         set.setTarget(imageView);
 
         LoveEvaluator evaluator = new LoveEvaluator(getP1(imageView), getP2(imageView));
-        ValueAnimator resultAnimator = ValueAnimator.ofObject(evaluator, getPoint(STARTPOINT,imageView), getPoint(ENDPONIT,imageView));
+        ValueAnimator resultAnimator = ValueAnimator.ofObject(evaluator, getPoint(STARTPOINT, imageView), getPoint(ENDPONIT, imageView));
         resultAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -138,40 +143,41 @@ public class LoveLayout extends FrameLayout {
     }
 
     private PointF getP2(ImageView imageView) {
-        return new PointF(random.nextInt(getWidth()),random.nextInt(getHeight()/2));
+        return new PointF(random.nextInt(getWidth()), random.nextInt(getHeight() / 2));
     }
 
     public PointF getP1(ImageView imageView) {
-        return new PointF(random.nextInt(getWidth()),random.nextInt(getHeight() / 2) + getHeight()/2-imageView.getDrawable().getIntrinsicHeight());
+        return new PointF(random.nextInt(getWidth()), random.nextInt(getHeight() / 2) + getHeight() / 2 - imageView.getDrawable().getIntrinsicHeight());
     }
-    private PointF getPoint(int type,ImageView imageView) {
+
+    private PointF getPoint(int type, ImageView imageView) {
         if (type == STARTPOINT) {
-            return new PointF(getWidth()/2-imageView.getDrawable().getIntrinsicWidth()/2, getHeight()-imageView.getDrawable().getIntrinsicHeight());
+            return new PointF(getWidth() / 2 - imageView.getDrawable().getIntrinsicWidth() / 2, getHeight() - imageView.getDrawable().getIntrinsicHeight());
         }
         return new PointF(random.nextInt(getWidth()), 0);
     }
 
 
-    class LoveEvaluator implements TypeEvaluator<PointF> {
-        LoveEvaluator(PointF p1, PointF p2) {
-            this.p1 = p1;
-            this.p2 = p2;
-        }
-
-        private PointF p1, p2;
-
-        @Override
-        public PointF evaluate(float t, PointF p0, PointF p3) {
-            Log.e("zjw", p0 + "   " + p1 + "      " + p2 + "     " + p3);
-
-            //时间因子t: 0~1
-            PointF point = new PointF();
-            //实现贝塞尔公式:
-            point.x = p0.x * (1 - t) * (1 - t) * (1 - t) + 3 * p1.x * t * (1 - t) * (1 - t) + 3 * p2.x * (1 - t) * t * t + p3.x * t * t * t;//实时计算最新的点X坐标
-            point.y = p0.y * (1 - t) * (1 - t) * (1 - t) + 3 * p1.y * t * (1 - t) * (1 - t) + 3 * p2.y * (1 - t) * t * t + p3.y * t * t * t;//实时计算最新的点Y坐标
-            return point;//实时返回最新计算出的点对象
-        }
+class LoveEvaluator implements TypeEvaluator<PointF> {
+    LoveEvaluator(PointF p1, PointF p2) {
+        this.p1 = p1;
+        this.p2 = p2;
     }
+
+    private PointF p1, p2;
+
+    @Override
+    public PointF evaluate(float t, PointF p0, PointF p3) {
+        Log.e("zjw", p0 + "   " + p1 + "      " + p2 + "     " + p3);
+
+        //时间因子t: 0~1
+        PointF point = new PointF();
+        //实现贝塞尔公式:
+        point.x = p0.x * (1 - t) * (1 - t) * (1 - t) + 3 * p1.x * t * (1 - t) * (1 - t) + 3 * p2.x * (1 - t) * t * t + p3.x * t * t * t;//实时计算最新的点X坐标
+        point.y = p0.y * (1 - t) * (1 - t) * (1 - t) + 3 * p1.y * t * (1 - t) * (1 - t) + 3 * p2.y * (1 - t) * t * t + p3.y * t * t * t;//实时计算最新的点Y坐标
+        return point;//实时返回最新计算出的点对象
+    }
+}
 
 
 }
